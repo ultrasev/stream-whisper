@@ -1,0 +1,5 @@
+aioredis==2.0.1
+PyAudio==0.2.14
+webrtcvad==2.0.10
+python-dotenv==1.0.0
+faster-whisper==0.10.0
