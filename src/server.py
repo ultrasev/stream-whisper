@@ -14,6 +14,7 @@ MODEL_SIZE = "large-v3"
 CN_PROMPT = '聊一下基于faster-whisper的实时/低延迟语音转写服务'
 logging.basicConfig(level=logging.INFO)
 model = WhisperModel(MODEL_SIZE, device="auto", compute_type="default")
+logging.info('Model loaded')
 
 
 async def transcribe():
