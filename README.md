@@ -1,8 +1,14 @@
 
-# 使用 Faster-whisper 模拟实时语音转写
+# 1. 使用 Faster-whisper 模拟实时语音转写
+
+<style>
+  img {
+    border-radius: 20px; /* 设置圆角的大小 */
+  }
+</style>
 
 <figure style="text-align: center; radius:10pt">
-    <img src="docs/flow.gif" width=789pt radius=10pt>
+    <img src="docs/flow.gif" width=689pt radius=10pt>
     <figcaption style="text-align:center"> faster-whiper 模拟实时语音转写流程 </figcaption>
 </figure>
 
@@ -48,3 +54,6 @@ pip3 install -r requirements.txt
 ## 为什么要用 Redis？
 Redis 不是必须的，从 client 端往 server 端传输数据，有很多种方法，可以根据自己的需求选择。
 
+
+
+Github 代码 https://github.com/ultrasev/stream-whisper，有问题欢迎提 issue。
