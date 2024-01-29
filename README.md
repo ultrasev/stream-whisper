@@ -1,16 +1,11 @@
 
 # 1. 使用 Faster-whisper 模拟实时语音转写
 
-<style>
-  img {
-    border-radius: 20px; /* 设置圆角的大小 */
-  }
-</style>
-
 <figure style="text-align: center; radius:10pt">
     <img src="docs/flow.gif" width=689pt radius=10pt>
     <figcaption style="text-align:center"> faster-whiper 模拟实时语音转写流程 </figcaption>
 </figure>
+
 
 
 # 使用方法
