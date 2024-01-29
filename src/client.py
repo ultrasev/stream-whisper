@@ -56,7 +56,7 @@ def record_until_silence():
     vad.set_mode(1)  # 敏感度，0 到 3，0 最不敏感，3 最敏感
     triggered = False
     frames.clear()
-    ratio = 0.3
+    ratio = 0.5
     while True:
         frame = stream.read(FRAME_SIZE)
         is_speech = vad.is_speech(frame, RATE)
