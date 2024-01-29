@@ -1,16 +1,29 @@
 
 # 1. 使用 Faster-whisper 模拟实时语音转写
 
+
 <style>
+  .video-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px 10px;
+  }
+
+  iframe {
+    width: 560px;
+    height: 315px;
+  }
   img {
     border-radius: 20px; /* 设置圆角的大小 */
   }
 </style>
 
-<figure style="text-align: center; radius:10pt">
-    <img src="docs/flow.gif" width=689pt radius=10pt>
-    <figcaption style="text-align:center"> faster-whiper 模拟实时语音转写流程 </figcaption>
-</figure>
+<div class="video-container">
+    <figure style="text-align: center; radius:10pt">
+        <img src="docs/flow.gif" width=689pt radius=10pt>
+        <figcaption style="text-align:center"> faster-whiper 模拟实时语音转写流程 </figcaption>
+    </figure>
+</div>
 
 
 # 使用方法
