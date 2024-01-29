@@ -34,7 +34,7 @@ pip3 install -r requirements.txt
 注：
 - `portaudio19-dev` 是 pyaudio 的依赖，如果系统已安装，可以忽略。
 
-在本地机器上运行 `python3 -m src.client`，客户端就启动了。运行前先测试一下麦克风是否正常工作，确认能够正常录音。 
+同样需要把 `.env` 文件中的 `REDIS_URL` 改成自己的 Redis 地址，在本地机器上运行 `python3 -m src.client`，客户端就启动了。运行前先测试一下麦克风是否正常工作，确认能够正常录音。 
 
 # 可优化方向
 1. 缩短静音间隔，提高实时性。默认静音间隔是 0.5 秒，可以根据自己的需求在 `client.py` 中调整。
