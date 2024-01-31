@@ -1,5 +1,5 @@
 
-# 1. 使用 Faster-whisper 模拟实时语音转写
+# 使用 Faster-whisper 模拟实时语音转写
 
 <figure style="text-align: center; radius:10pt">
     <img src="docs/flow.gif" width=689pt radius=10pt>
@@ -19,8 +19,9 @@ pip3 install -r requirements.txt
 
 注：
 - `libcublas11` 是 NVIDIA CUDA Toolkit 的依赖，如果需要使用 CUDA Toolkit，需要安装。
+- 经 [@muzian666](https://github.com/muzian666) 提示，aioredis 包目前仍然不支持 Python3.11，Python 版本建议 3.8 ~ 3.10
 
-把 `.env` 文件中的 `REDIS_URL` 改成自己的 Redis 地址，然后运行 `python3 -m src.server`，服务端就启动了。
+把 `.env` 文件中的 `REDIS_SERVER` 改成自己的 Redis 地址，然后运行 `python3 -m src.server`，服务端就启动了。
 第一次执行时，会从 huggingface 上下载语音识别模型，需要等待一段时间。Huggingface 已经被防火墙特别对待了，下载速度很慢，建议使用代理。
 
 
@@ -35,7 +36,7 @@ pip3 install -r requirements.txt
 注：
 - `portaudio19-dev` 是 pyaudio 的依赖，如果系统已安装，可以忽略。
 
-同样需要把 `.env` 文件中的 `REDIS_URL` 改成自己的 Redis 地址，在本地机器上运行 `python3 -m src.client`，客户端就启动了。运行前先测试一下麦克风是否正常工作，确认能够正常录音。 
+同样需要把 `.env` 文件中的 `REDIS_SERVER` 改成自己的 Redis 地址，在本地机器上运行 `python3 -m src.client`，客户端就启动了。运行前先测试一下麦克风是否正常工作，确认能够正常录音。 
 
 # 可优化方向
 1. 缩短静音间隔，提高实时性。默认静音间隔是 0.5 秒，可以根据自己的需求在 `client.py` 中调整。
