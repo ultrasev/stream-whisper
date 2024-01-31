@@ -50,5 +50,3 @@ pip3 install -r requirements.txt
 Redis 不是必须的，从 client 端往 server 端传输数据，有很多种方法，可以根据自己的需求选择。
 
 
-
-Github 代码 https://github.com/ultrasev/stream-whisper，有问题欢迎提 issue。
