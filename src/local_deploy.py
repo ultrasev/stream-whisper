@@ -35,7 +35,7 @@ class Transcriber(object):
         """ FasterWhisper 语音转写
 
         Args:
-            model_size (str): 模型大小，可选项为 "tidy", "base", "small", "medium", "large" 。
+            model_size (str): 模型大小，可选项为 "tiny", "base", "small", "medium", "large" 。
                 更多信息参考：https://github.com/openai/whisper
             device (str, optional): 模型运行设备。
             compute_type (str, optional): 计算类型。默认为"default"。
