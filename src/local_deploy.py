@@ -20,6 +20,10 @@ import pyaudio
 import webrtcvad
 import logging
 
+#解决bug问题root - INFO - stop recording...
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(name)s - %(levelname)s - %(message)s')
