@@ -1,7 +1,7 @@
 # 使用 Faster-whisper 模拟实时语音转写
 
 <figure style="text-align: center; radius:10pt">
-    <img src="docs/flow.gif" width=689pt radius=10pt>
+    <img src="assets/flow.gif" width=689pt radius=10pt>
 </figure>
 <div align="center">
 
