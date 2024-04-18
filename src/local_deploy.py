@@ -9,29 +9,36 @@
     python3 local_deploy.py
 """
 
-from faster_whisper import WhisperModel
-from io import BytesIO
-import typing
-import io
 import collections
+import io
+import logging
+import queue
+import threading
+import typing
 import wave
+from io import BytesIO
 
+import codefast as cf
 import pyaudio
 import webrtcvad
-import logging
+from faster_whisper import WhisperModel
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(name)s - %(levelname)s - %(message)s')
 
 
-class Transcriber(object):
-    def __init__(self,
-                 model_size: str,
-                 device: str = "auto",
-                 compute_type: str = "default",
-                 prompt: str = '实时/低延迟语音转写服务，林黛玉、倒拔、杨柳树、鲁迅、周树人、关键词、转写正确'
-                 ) -> None:
+class Queues:
+    audio = queue.Queue()
+    text = queue.Queue()
+
+
+class Transcriber(threading.Thread):
+    def __init__(
+            self,
+            model_size: str,
+            device: str = "auto",
+            compute_type: str = "default",
+            prompt: str = '实时/低延迟语音转写服务，林黛玉、倒拔、杨柳树、鲁迅、周树人、关键词、转写正确') -> None:
         """ FasterWhisper 语音转写
 
         Args:
@@ -41,7 +48,7 @@ class Transcriber(object):
             compute_type (str, optional): 计算类型。默认为"default"。
             prompt (str, optional): 初始提示。如果需要转写简体中文，可以使用简体中文提示。
         """
-
+        super().__init__()
         self.model_size = model_size
         self.device = device
         self.compute_type = compute_type
@@ -49,8 +56,8 @@ class Transcriber(object):
 
     def __enter__(self) -> 'Transcriber':
         self._model = WhisperModel(self.model_size,
-                                  device=self.device,
-                                  compute_type=self.compute_type)
+                                   device=self.device,
+                                   compute_type=self.compute_type)
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
@@ -58,16 +65,28 @@ class Transcriber(object):
 
     def __call__(self, audio: bytes) -> typing.Generator[str, None, None]:
         segments, info = self._model.transcribe(BytesIO(audio),
-                                               initial_prompt=self.prompt)
-        if info.language != "zh":
-            return {"error": "transcribe Chinese only"}
+                                                initial_prompt=self.prompt,
+                                                vad_filter=True)
+        # if info.language != "zh":
+        #     return {"error": "transcribe Chinese only"}
         for segment in segments:
             t = segment.text
+            if self.prompt in t.strip():
+                continue
             if t.strip().replace('.', ''):
                 yield t
 
+    def run(self):
+        while True:
+            audio = Queues.audio.get()
+            text = ''
+            for seg in self(audio):
+                logging.info(cf.fp.cyan(seg))
+                text += seg
+            Queues.text.put(text)
 
-class AudioRecorder(object):
+
+class AudioRecorder(threading.Thread):
     """ Audio recorder.
     Args:
         channels (int, 可选): 通道数，默认为1（单声道）。
@@ -75,12 +94,12 @@ class AudioRecorder(object):
         chunk (int, 可选): 缓冲区中的帧数，默认为256。
         frame_duration (int, 可选): 每帧的持续时间（单位：毫秒），默认为30。
     """
-
     def __init__(self,
                  channels: int = 1,
                  sample_rate: int = 16000,
                  chunk: int = 256,
                  frame_duration: int = 30) -> None:
+        super().__init__()
         self.sample_rate = sample_rate
         self.channels = channels
         self.chunk = chunk
@@ -116,7 +135,7 @@ class AudioRecorder(object):
             self.__frames.clear()
         return buf.getvalue()
 
-    def __iter__(self):
+    def run(self):
         """ Record audio until silence is detected.
         """
         MAXLEN = 30
@@ -139,16 +158,38 @@ class AudioRecorder(object):
                 if num_unvoiced > ratio * watcher.maxlen:
                     logging.info("stop recording...")
                     triggered = False
-                    yield bytes(self)
+                    Queues.audio.put(bytes(self))
+                    logging.info("audio task number: {}".format(
+                        Queues.audio.qsize()))
+
+
+class Chat(threading.Thread):
+    def __init__(self, prompt: str) -> None:
+        super().__init__()
+        self.prompt = prompt
+
+    def run(self):
+        prompt = "Hey! I'm currently working on my English speaking skills and I was hoping you could help me out. If you notice any mistakes in my expressions or if something I say doesn't sound quite right, could you please correct me? And if everything's fine, just carry on with a normal conversation. I'd really appreciate it if you could reply in a conversational, spoken English style. This way, it feels more like a natural chat. Thanks a lot for your help!"
+        while True:
+            text = Queues.text.get()
+            if text:
+                import os
+                os.system('chat "{}"'.format(prompt + text))
+                prompt = ""
 
 
 def main():
     try:
         with AudioRecorder(channels=1, sample_rate=16000) as recorder:
             with Transcriber(model_size="base") as transcriber:
-                for audio in recorder:
-                    for seg in transcriber(audio):
-                        logging.info(seg)
+                recorder.start()
+                transcriber.start()
+                # chat = Chat("")
+                # chat.start()
+
+                recorder.join()
+                transcriber.join()
+
     except KeyboardInterrupt:
         print("KeyboardInterrupt: terminating...")
     except Exception as e:
