@@ -13,13 +13,16 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-model_size = os.getenv('MODEL', 'base')
+# Accept the following environment variables from Docker
+MODEL_SIZE = os.getenv('MODEL', 'base')
+PROMPT = os.getenv('PROMPT', '基于FastWhisper的低延迟语音转写服务')
 
 
 class ValidateFileTypeMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.method.lower() == "post":
             try:
+                logger.info(f"Request: {request.url}")
                 response = await call_next(request)
                 return response
             except av.error.InvalidDataError:
@@ -54,7 +57,7 @@ class Transcriber:
             model_size: str,
             device: str = "auto",
             compute_type: str = "default",
-            prompt: str = '实时/低延迟语音转写服务，林黛玉、倒拔、杨柳树、鲁迅、周树人、关键词、转写正确') -> None:
+            prompt: str = PROMPT) -> None:
         """ FasterWhisper 语音转写
 
         Args:
@@ -97,7 +100,7 @@ class Transcriber:
 
 @app.post("/v1/audio/transcriptions")
 async def _transcribe(file: UploadFile = File(...)):
-    with Transcriber(model_size) as stt:
+    with Transcriber(MODEL_SIZE) as stt:
         audio = await file.read()
         text = ','.join([seg async for seg in stt(audio)])
         return {"text": text}
