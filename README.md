@@ -55,7 +55,9 @@ python3 src/local_deploy.py
 
 # Docker 一键部署自己的 whisper 转写服务
 ```bash
-docker run -d --name whisper -p 8000:8000 ghcr.io/ultrasev/whisper
+docker run -d --name whisper \
+    -e MODEL
+    -p 8000:8000 ghcr.io/ultrasev/whisper
 ```
 接口兼容 OpenAI 的 [API 规范](https://platform.openai.com/docs/guides/speech-to-text)，可以直接使用 OpenAI 的 SDK 进行调用。
 
@@ -70,16 +72,3 @@ transcription = client.audio.transcriptions.create(
 )
 print(transcription.text)
 ```
-
-
-# 可优化方向
-1. 缩短静音间隔，提高实时性。默认静音间隔是 0.5 秒，可以根据自己的需求在 `client.py` 中调整。
-2. 使用更好的语音识别模型，提高识别准确率。
-
-# Q&A
-## Redis 地址怎么搞？
-1. 自己有带有公网 IP 的服务器的话， 使用 docker 可以很方便的创建一个；
-2. 或者通过 [redislabs](https://app.redislabs.com/#/) 注册账号，创建一个免费实例，获取连接信息。免费实例有 30M 内存，足够使用。建议选择日本 AWS 区域，延迟低。
-
-## 为什么要用 Redis？
-Redis 不是必须的，从 client 端往 server 端传输数据，有很多种方法，可以根据自己的需求选择。
