@@ -5,8 +5,6 @@
 </figure>
 <div align="center">
 
-<a href='https://follow-your-click.github.io/'><img src='https://img.shields.io/badge/Project-Page-Green'></a> ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ultrasev.stream-whisper&left_color=green&right_color=red)  [![GitHub](https://img.shields.io/github/stars/ultrasev/stream-whisper?style=social)](https://github.com/ultrasev/stream-whisper)
-</div>
 
 
 # 使用方法
