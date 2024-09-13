@@ -3,7 +3,6 @@
 <figure style="text-align: center; radius:10pt">
     <img src="assets/flow.gif" width=689pt radius=10pt>
 </figure>
-<div align="center">
 
 
 
