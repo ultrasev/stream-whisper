@@ -18,7 +18,6 @@ import typing
 import wave
 from io import BytesIO
 
-import codefast as cf
 import pyaudio
 import webrtcvad
 from faster_whisper import WhisperModel
@@ -81,7 +80,7 @@ class Transcriber(threading.Thread):
             audio = Queues.audio.get()
             text = ''
             for seg in self(audio):
-                logging.info(cf.fp.cyan(seg))
+                logging.info(seg)
                 text += seg
             Queues.text.put(text)
 
@@ -94,6 +93,7 @@ class AudioRecorder(threading.Thread):
         chunk (int, 可选): 缓冲区中的帧数，默认为256。
         frame_duration (int, 可选): 每帧的持续时间（单位：毫秒），默认为30。
     """
+
     def __init__(self,
                  channels: int = 1,
                  sample_rate: int = 16000,
